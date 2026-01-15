@@ -99,24 +99,23 @@ button{
 /* Bunnies */
 .bunny-area{
   display:none;
-  margin-top:20px;
-  height:140px;
+  margin-top:15px;
+  height:160px;
   position:relative;
 }
 
 .bunny{
-  width:90px;
+  width:120px;
   position:absolute;
   bottom:0;
-  animation:bunnyFight 0.7s infinite alternate;
 }
 
-.bunny.left{ left:60px; }
-.bunny.right{ right:60px; animation-delay:0.3s; }
+.bunny.left{
+  left:10px;
+}
 
-@keyframes bunnyFight{
-  from{ transform:translateX(-10px) rotate(-5deg); }
-  to{ transform:translateX(10px) rotate(5deg); }
+.bunny.right{
+  right:10px;
 }
 </style>
 </head>
@@ -134,9 +133,14 @@ button{
     <button id="maybe">MAYBE 🤔</button>
   </div>
 
+  <!-- 🐰 REAL PLAYFUL FIGHTING BUNNIES -->
   <div class="bunny-area" id="bunnies">
-    <img class="bunny left" src="https://media.giphy.com/media/v6aOjy0Qo1fIA/giphy.gif">
-    <img class="bunny right" src="https://media.giphy.com/media/l0MYC0LajbaPoEADu/giphy.gif">
+    <img class="bunny left"
+      src="https://media.giphy.com/media/3oriO0OEd9QIDdllqo/giphy.gif"
+      alt="bunnies play fighting">
+    <img class="bunny right"
+      src="https://media.giphy.com/media/l2SpZkQ0XT1XtKus0/giphy.gif"
+      alt="bunnies play fighting">
   </div>
 </div>
 
