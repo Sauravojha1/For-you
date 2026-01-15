@@ -110,19 +110,19 @@ button{
   bottom:0;
 }
 
-.bunny.left{
-  left:10px;
-}
-
-.bunny.right{
-  right:10px;
-}
+.bunny.left{ left:10px; }
+.bunny.right{ right:10px; }
 </style>
 </head>
 
 <body>
 
-<div class="container">
+<!-- 🎵 MUSIC (starts on first click) -->
+<audio id="song" loop>
+  <source src="until-i-found-you.mp3" type="audio/mpeg">
+</audio>
+
+<div class="container" id="page">
   <h1>Hey Muskan 🐨👸🏻</h1>
   <p id="question">Will you be my Valentine, now and forever? ❤️</p>
   <p id="message">Be honest 🙂‍↔️</p>
@@ -133,14 +133,11 @@ button{
     <button id="maybe">MAYBE 🤔</button>
   </div>
 
-  <!-- 🐰 REAL PLAYFUL FIGHTING BUNNIES -->
   <div class="bunny-area" id="bunnies">
     <img class="bunny left"
-      src="https://media.giphy.com/media/3oriO0OEd9QIDdllqo/giphy.gif"
-      alt="bunnies play fighting">
+      src="https://media.giphy.com/media/3oriO0OEd9QIDdllqo/giphy.gif">
     <img class="bunny right"
-      src="https://media.giphy.com/media/l2SpZkQ0XT1XtKus0/giphy.gif"
-      alt="bunnies play fighting">
+      src="https://media.giphy.com/media/l2SpZkQ0XT1XtKus0/giphy.gif">
   </div>
 </div>
 
@@ -148,6 +145,15 @@ button{
 <div class="hearts" id="hearts"></div>
 
 <script>
+/* 🎵 Start song on FIRST click anywhere */
+let musicStarted = false;
+document.body.addEventListener("click", () => {
+  if (!musicStarted) {
+    document.getElementById("song").play();
+    musicStarted = true;
+  }
+}, { once:true });
+
 let yesSize=18, otherSize=16, clicks=0;
 const msgs=[
  "Please think again 🥺",
