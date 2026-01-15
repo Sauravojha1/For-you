@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Be My Valentine ❤️</title>
 
 <style>
@@ -13,28 +13,31 @@ body{
   justify-content:center;
   align-items:center;
   background:linear-gradient(135deg,#ffdde1,#ee9ca7);
-  font-family: 'Arial', sans-serif;
+  font-family: Arial, sans-serif;
   overflow:hidden;
 }
 
 .container{
-  background:rgba(255,255,255,0.95);
+  background:rgba(255,255,255,0.97);
   padding:30px;
-  border-radius:20px;
+  border-radius:22px;
   text-align:center;
   width:90%;
   max-width:400px;
-  box-shadow:0 15px 40px rgba(0,0,0,0.2);
+  box-shadow:0 15px 40px rgba(0,0,0,0.25);
+  position:relative;
+  z-index:2;
 }
 
 h1{ color:#d6336c; }
-#message{ margin:15px 0; font-size:16px; color:#444; }
+#message{ margin:15px 0; color:#444; min-height:24px; }
 
 .buttons{
   display:flex;
   justify-content:center;
-  gap:15px;
+  gap:12px;
   flex-wrap:wrap;
+  position:relative;
 }
 
 button{
@@ -46,21 +49,12 @@ button{
   transition:all 0.3s ease;
 }
 
-#yes{
-  background:#ff4d6d;
-  color:white;
-  font-size:18px;
-}
+#yes{ background:#ff4d6d; color:white; font-size:18px; }
+#no{ background:#adb5bd; }
+#maybe{ background:#ffd166; }
 
-#no{
-  background:#adb5bd;
-}
-
-#maybe{
-  background:#ffd166;
-}
-
-.fireworks{
+/* Fireworks */
+.fireworks, .hearts{
   position:fixed;
   inset:0;
   pointer-events:none;
@@ -71,9 +65,7 @@ button{
   position:absolute;
   width:6px;
   height:6px;
-  background:transparent;
-  border-radius:50%;
-  animation: explode 1.2s infinite;
+  animation:explode 1.2s infinite;
 }
 
 @keyframes explode{
@@ -92,23 +84,46 @@ button{
   }
 }
 
-.bunnies{
-  display:none;
-  font-size:60px;
-  margin-top:20px;
-  animation:bunnyFight 0.6s infinite alternate;
+/* Hearts */
+.heart{
+  position:absolute;
+  font-size:22px;
+  animation:fall 5s linear infinite;
 }
 
+@keyframes fall{
+  from{ transform:translateY(-10vh); opacity:1; }
+  to{ transform:translateY(110vh); opacity:0; }
+}
+
+/* Bunnies */
+.bunny-area{
+  display:none;
+  margin-top:20px;
+  height:140px;
+  position:relative;
+}
+
+.bunny{
+  width:90px;
+  position:absolute;
+  bottom:0;
+  animation:bunnyFight 0.7s infinite alternate;
+}
+
+.bunny.left{ left:60px; }
+.bunny.right{ right:60px; animation-delay:0.3s; }
+
 @keyframes bunnyFight{
-  from{ transform:translateX(-10px); }
-  to{ transform:translateX(10px); }
+  from{ transform:translateX(-10px) rotate(-5deg); }
+  to{ transform:translateX(10px) rotate(5deg); }
 }
 </style>
 </head>
 
 <body>
 
-<div class="container" id="card">
+<div class="container">
   <h1>Hey ❤️</h1>
   <p id="question">Will you be my Valentine?</p>
   <p id="message">Be honest 😌</p>
@@ -119,81 +134,95 @@ button{
     <button id="maybe">MAYBE 🤔</button>
   </div>
 
-  <div class="bunnies" id="bunnies">🐰💥🐰</div>
+  <div class="bunny-area" id="bunnies">
+    <img class="bunny left" src="https://media.giphy.com/media/v6aOjy0Qo1fIA/giphy.gif">
+    <img class="bunny right" src="https://media.giphy.com/media/l0MYC0LajbaPoEADu/giphy.gif">
+  </div>
 </div>
 
 <div class="fireworks" id="fireworks"></div>
+<div class="hearts" id="hearts"></div>
 
 <script>
-let yesSize = 18;
-let otherSize = 16;
-let clicks = 0;
-
-const messages = [
-  "Please think again 🥺",
-  "Pretty please 💕",
-  "Don’t break my heart 😭",
-  "I’ll bring chocolates 🍫",
-  "Last chance 😳"
+let yesSize=18, otherSize=16, clicks=0;
+const msgs=[
+ "Please think again 🥺",
+ "Pretty please 💕",
+ "I’ll bring chocolates 🍫",
+ "I’m not giving up 😤",
+ "You know you want to 😏"
 ];
 
-const yesBtn = document.getElementById("yes");
-const noBtn = document.getElementById("no");
-const maybeBtn = document.getElementById("maybe");
-const msg = document.getElementById("message");
+const yes=document.getElementById("yes");
+const no=document.getElementById("no");
+const maybe=document.getElementById("maybe");
+const msg=document.getElementById("message");
+
+function move(btn){
+  btn.style.position="absolute";
+  btn.style.left=Math.random()*70+"%";
+  btn.style.top=Math.random()*70+"%";
+}
 
 function shrink(btn){
-  otherSize -= 3;
-  if(otherSize <= 6){
-    btn.style.display = "none";
-  } else {
-    btn.style.fontSize = otherSize + "px";
-    btn.style.padding = "8px 12px";
-  }
+  otherSize=Math.max(8, otherSize-2);
+  btn.style.fontSize=otherSize+"px";
+  btn.style.padding="6px 10px";
+  move(btn);
 }
 
 function growYes(){
-  yesSize += 6;
-  yesBtn.style.fontSize = yesSize + "px";
-  yesBtn.style.padding = (12 + yesSize/6) + "px " + (18 + yesSize/4) + "px";
+  yesSize+=6;
+  yes.style.fontSize=yesSize+"px";
+  yes.style.padding=(12+yesSize/6)+"px "+(18+yesSize/4)+"px";
 }
 
-function handleNoMaybe(){
+function handleNoMaybe(btn){
   clicks++;
   growYes();
-  msg.textContent = messages[Math.min(clicks-1, messages.length-1)];
-  shrink(noBtn);
-  shrink(maybeBtn);
+  msg.textContent=msgs[Math.min(clicks-1,msgs.length-1)];
+  shrink(btn);
 }
 
-noBtn.onclick = handleNoMaybe;
-maybeBtn.onclick = handleNoMaybe;
+no.onclick=()=>handleNoMaybe(no);
+maybe.onclick=()=>handleNoMaybe(maybe);
 
-yesBtn.onclick = () => {
-  document.getElementById("question").textContent = "YAYYY 💘";
-  msg.textContent = "I knew it 😍 Happy Valentine’s Day!";
+yes.onclick=()=>{
+  document.getElementById("question").textContent="YAYYY 💘";
+  msg.textContent="I knew it 😍 Happy Valentine’s Day!";
   document.querySelector(".buttons").style.display="none";
-
   document.getElementById("bunnies").style.display="block";
-  startFireworks();
+  startFireworks(); startHearts();
 
-  // Open email app
   setTimeout(()=>{
-    window.location.href =
-      "mailto:?subject=My Valentine 💖&body=Yes! I will be your Valentine ❤️";
-  },1200);
+    window.location.href=
+      "mailto:srvojha2@gmail.com?subject=My Valentine 💖&body=Yes! I will be your Valentine ❤️";
+  },1500);
 };
 
 function startFireworks(){
-  const fw = document.getElementById("fireworks");
+  const fw=document.getElementById("fireworks");
   fw.style.display="block";
   for(let i=0;i<8;i++){
     const f=document.createElement("div");
     f.className="firework";
     f.style.top=Math.random()*100+"%";
     f.style.left=Math.random()*100+"%";
-    f.style.animationDelay=(Math.random())+"s";
+    f.style.animationDelay=Math.random()+"s";
     fw.appendChild(f);
+  }
+}
+
+function startHearts(){
+  const h=document.getElementById("hearts");
+  h.style.display="block";
+  for(let i=0;i<20;i++){
+    const heart=document.createElement("div");
+    heart.className="heart";
+    heart.textContent="💖";
+    heart.style.left=Math.random()*100+"%";
+    heart.style.animationDelay=Math.random()*5+"s";
+    h.appendChild(heart);
   }
 }
 </script>
