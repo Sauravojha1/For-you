@@ -1,108 +1,201 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Be My Valentine ❤️</title>
 
 <style>
-  body {
-    margin: 0;
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background: linear-gradient(135deg, #ffdde1, #ee9ca7);
-    font-family: 'Arial', sans-serif;
-  }
+body{
+  margin:0;
+  height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  background:linear-gradient(135deg,#ffdde1,#ee9ca7);
+  font-family: 'Arial', sans-serif;
+  overflow:hidden;
+}
 
-  .container {
-    text-align: center;
-    background: rgba(255,255,255,0.9);
-    padding: 30px;
-    border-radius: 20px;
-    width: 90%;
-    max-width: 400px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-  }
+.container{
+  background:rgba(255,255,255,0.95);
+  padding:30px;
+  border-radius:20px;
+  text-align:center;
+  width:90%;
+  max-width:400px;
+  box-shadow:0 15px 40px rgba(0,0,0,0.2);
+}
 
-  h1 {
-    color: #d6336c;
-    margin-bottom: 10px;
-  }
+h1{ color:#d6336c; }
+#message{ margin:15px 0; font-size:16px; color:#444; }
 
-  p {
-    color: #333;
-    margin-bottom: 25px;
-  }
+.buttons{
+  display:flex;
+  justify-content:center;
+  gap:15px;
+  flex-wrap:wrap;
+}
 
-  .buttons {
-    display: flex;
-    justify-content: center;
-    gap: 20px;
-  }
+button{
+  border:none;
+  border-radius:14px;
+  padding:12px 18px;
+  font-size:16px;
+  cursor:pointer;
+  transition:all 0.3s ease;
+}
 
-  button {
-    border: none;
-    border-radius: 12px;
-    padding: 12px 20px;
-    font-size: 16px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-  }
+#yes{
+  background:#ff4d6d;
+  color:white;
+  font-size:18px;
+}
 
-  #yesBtn {
-    background: #ff4d6d;
-    color: white;
-    font-size: 18px;
-  }
+#no{
+  background:#adb5bd;
+}
 
-  #noBtn {
-    background: #adb5bd;
-    color: #333;
-  }
+#maybe{
+  background:#ffd166;
+}
 
-  .final {
-    display: none;
-    font-size: 22px;
-    color: #c9184a;
-    font-weight: bold;
+.fireworks{
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  display:none;
+}
+
+.firework{
+  position:absolute;
+  width:6px;
+  height:6px;
+  background:transparent;
+  border-radius:50%;
+  animation: explode 1.2s infinite;
+}
+
+@keyframes explode{
+  0%{ box-shadow:0 0 #ff4d6d; opacity:1; }
+  100%{
+    box-shadow:
+      0 -80px #ff4d6d,
+      56px -56px #ffd166,
+      80px 0 #06d6a0,
+      56px 56px #4dabf7,
+      0 80px #c77dff,
+      -56px 56px #ff6b6b,
+      -80px 0 #ffd93d,
+      -56px -56px #63e6be;
+    opacity:0;
   }
+}
+
+.bunnies{
+  display:none;
+  font-size:60px;
+  margin-top:20px;
+  animation:bunnyFight 0.6s infinite alternate;
+}
+
+@keyframes bunnyFight{
+  from{ transform:translateX(-10px); }
+  to{ transform:translateX(10px); }
+}
 </style>
 </head>
 
 <body>
 
-<div class="container">
+<div class="container" id="card">
   <h1>Hey ❤️</h1>
-  <p>Will you be my Valentine?</p>
+  <p id="question">Will you be my Valentine?</p>
+  <p id="message">Be honest 😌</p>
 
   <div class="buttons">
-    <button id="yesBtn" onclick="yesClicked()">YES 💖</button>
-    <button id="noBtn" onclick="noClicked()">NO 😢</button>
+    <button id="yes">YES 💖</button>
+    <button id="no">NO 😢</button>
+    <button id="maybe">MAYBE 🤔</button>
   </div>
 
-  <div class="final" id="finalMessage">
-    Yay! I knew it 😍💘<br>
-    Happy Valentine’s Day ❤️
-  </div>
+  <div class="bunnies" id="bunnies">🐰💥🐰</div>
 </div>
 
+<div class="fireworks" id="fireworks"></div>
+
 <script>
-  let yesSize = 18;
+let yesSize = 18;
+let otherSize = 16;
+let clicks = 0;
 
-  function noClicked() {
-    yesSize += 6;
-    document.getElementById("yesBtn").style.fontSize = yesSize + "px";
-    document.getElementById("yesBtn").style.padding =
-      (12 + yesSize / 6) + "px " + (20 + yesSize / 4) + "px";
-  }
+const messages = [
+  "Please think again 🥺",
+  "Pretty please 💕",
+  "Don’t break my heart 😭",
+  "I’ll bring chocolates 🍫",
+  "Last chance 😳"
+];
 
-  function yesClicked() {
-    document.querySelector(".buttons").style.display = "none";
-    document.querySelector("p").style.display = "none";
-    document.getElementById("finalMessage").style.display = "block";
+const yesBtn = document.getElementById("yes");
+const noBtn = document.getElementById("no");
+const maybeBtn = document.getElementById("maybe");
+const msg = document.getElementById("message");
+
+function shrink(btn){
+  otherSize -= 3;
+  if(otherSize <= 6){
+    btn.style.display = "none";
+  } else {
+    btn.style.fontSize = otherSize + "px";
+    btn.style.padding = "8px 12px";
   }
+}
+
+function growYes(){
+  yesSize += 6;
+  yesBtn.style.fontSize = yesSize + "px";
+  yesBtn.style.padding = (12 + yesSize/6) + "px " + (18 + yesSize/4) + "px";
+}
+
+function handleNoMaybe(){
+  clicks++;
+  growYes();
+  msg.textContent = messages[Math.min(clicks-1, messages.length-1)];
+  shrink(noBtn);
+  shrink(maybeBtn);
+}
+
+noBtn.onclick = handleNoMaybe;
+maybeBtn.onclick = handleNoMaybe;
+
+yesBtn.onclick = () => {
+  document.getElementById("question").textContent = "YAYYY 💘";
+  msg.textContent = "I knew it 😍 Happy Valentine’s Day!";
+  document.querySelector(".buttons").style.display="none";
+
+  document.getElementById("bunnies").style.display="block";
+  startFireworks();
+
+  // Open email app
+  setTimeout(()=>{
+    window.location.href =
+      "mailto:?subject=My Valentine 💖&body=Yes! I will be your Valentine ❤️";
+  },1200);
+};
+
+function startFireworks(){
+  const fw = document.getElementById("fireworks");
+  fw.style.display="block";
+  for(let i=0;i<8;i++){
+    const f=document.createElement("div");
+    f.className="firework";
+    f.style.top=Math.random()*100+"%";
+    f.style.left=Math.random()*100+"%";
+    f.style.animationDelay=(Math.random())+"s";
+    fw.appendChild(f);
+  }
+}
 </script>
 
 </body>
